@@ -1,0 +1,39 @@
+Sub COTIZACION_MASIVA()
+ Dim i As Integer, j As Integer '2 Iteradores
+ Dim x As Integer   'Llenado de Servicios
+ Dim H1 As Worksheet, H2 As Worksheet, H3 As Worksheet
+ Dim ruta As String, archivo As String
+ 
+Set H1 = Sheets("COTIZACIÓN")
+Set H2 = Sheets("Datos_Principales")
+Set H3 = Sheets("Detalle_Servicio")
+i = 2   'Valor inicial del Bucle General
+Do While H2.Range("A" & i).Value <> ""
+ H1.Range("E4").Value = H2.Range("B" & i).Value  'Fecha
+ H1.Range("E5").Value = H2.Range("A" & i).Value  'Nro Cotizacion
+ H1.Range("B11").Value = H2.Range("C" & i).Value 'Nombre Cliente
+ H1.Range("B12").Value = H2.Range("D" & i).Value  'Razón Social
+ H1.Range("B13").Value = H2.Range("E" & i).Value  'Dirección
+ H1.Range("B14").Value = H2.Range("F" & i).Value  'Teléfono
+
+ j = 2 'Valor inicial del Bucle Secundario
+ x = 17 'Inicio de llenado de servicios
+ Range("A17:D32").ClearContents
+ Do While H3.Range("A" & j).Value <> ""
+  If H3.Range("A" & j).Value = H1.Range("E5").Value Then
+    H1.Range("A" & x).Value = H3.Range("B" & j).Value 'Descripción
+    H1.Range("C" & x).Value = H3.Range("C" & j).Value 'Precio
+    H1.Range("D" & x).Value = H3.Range("D" & j).Value 'Cantidad
+                x = x + 1
+  End If
+            j = j + 1
+ Loop
+    'Vamos a emitir el PDF posterior al llenado de la cotización
+    ruta = "AQUI VA TU RUTA DONDE QUIERES QUE SE DESCARGUE LOS PDF"
+    archivo = "PDF de la Cotización " & H1.Range("E5").Value
+    H1.ExportAsFixedFormat Type:=xlTypePDF, _
+    Filename:=ruta & "\" & archivo, Quality:=xlQualityStandard, OpenAfterPublish:=False, IgnorePrintAreas:=False
+        
+            i = i + 1
+Loop
+End Sub
